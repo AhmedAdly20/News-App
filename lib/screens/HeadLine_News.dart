@@ -10,12 +10,18 @@ class HeadLineNews extends StatefulWidget {
 
 class _HeadLineNewsState extends State<HeadLineNews> with SingleTickerProviderStateMixin {
   TabController _tabController;
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this, initialIndex: 0);
   }
 
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
