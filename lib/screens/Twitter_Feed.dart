@@ -19,12 +19,15 @@ class _TwitterFeedState extends State<TwitterFeed> {
       ),
       drawer: NavigationDrawer(),
       body: ListView.builder(
+        padding: EdgeInsets.all(8.0),
         itemBuilder: (context,position){
           return Card(
+            margin: EdgeInsets.only(bottom: 16.0),
             child: Column(
               children: <Widget>[
                 _cardHeader(),
                 _cardBody(),
+                _drawLine(),
                 _cardFooter(),
               ],
             ),
@@ -50,12 +53,30 @@ class _TwitterFeedState extends State<TwitterFeed> {
           children: <Widget>[
             Row(
               children: <Widget>[
-                Text('Christina Meyers '),
-                Text('@ch_meyers'),
+                Text(
+                  'Christina Meyers',
+                  style: TextStyle(
+                    color: Colors.grey.shade900,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(width: 8.0),
+                Text(
+                  '@ch_meyers',
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
               ],
             ),
-            SizedBox( height: 8, ),
-            Text( 'Fri, 12 May 2017 • 14.30' ),
+            SizedBox(height: 8),
+            Text(
+              'Fri, 12 May 2017 • 14.30',
+              style: TextStyle(
+                color: Colors.grey,
+              ),
+            ),
           ],
         ),
       ],
@@ -65,7 +86,14 @@ class _TwitterFeedState extends State<TwitterFeed> {
   Widget _cardBody(){
     return Padding(
       padding: const EdgeInsets.only( left: 16, right: 16 , bottom: 8 ),
-      child: Text( 'We also talk about the future of work as the robots advance, and we ask whether a retro phone' ),
+      child: Text(
+        'We also talk about the future of work as the robots advance, and we ask whether a retro phone',
+        style: TextStyle(
+          fontSize: 16,
+          height: 1.3,
+          color: Colors.grey.shade900
+        ),
+      ),
     );
   }
 
@@ -78,11 +106,20 @@ class _TwitterFeedState extends State<TwitterFeed> {
           Row(
             children: <Widget>[
               IconButton(
-                icon: Icon(Icons.repeat),
+                icon: Icon(
+                  Icons.repeat,
+                  size: 28,
+                ),
                 color: Colors.orange,
                 onPressed: (){},
               ),
-              Text('25')
+              Text(
+                '25',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 16,
+                ),
+              )
             ],
           ),
           Row(
@@ -109,6 +146,15 @@ class _TwitterFeedState extends State<TwitterFeed> {
           ),
         ],
       ),
+    );
+
+  }
+
+  Widget _drawLine(){
+    return Container(
+      height: 1,
+      color: Colors.grey.shade400,
+      margin: EdgeInsets.only(top: 16.0),
     );
   }
 }
