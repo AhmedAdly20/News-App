@@ -156,7 +156,7 @@ class _FacebookFeedsState extends State<FacebookFeeds> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        FlatButton(onPressed: (){}, child: Text('10 OMMENTS'  ,style: _hashTagStyle,)),
+        FlatButton(onPressed: (){}, child: Text('10 COMMENTS'  ,style: _hashTagStyle,)),
         Row(
           children: <Widget>[
             FlatButton(onPressed: (){}, child: Text('SHARE' , style: _hashTagStyle,)),
