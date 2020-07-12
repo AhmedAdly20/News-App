@@ -24,9 +24,6 @@ class AuthorsAPI {
         );
         authors.add(author);
       }
-      for (var i in authors){
-        print(i.email);
-      }
     }
     return authors;
   }
