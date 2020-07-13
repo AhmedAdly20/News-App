@@ -82,7 +82,7 @@ class _WhatsNewState extends State<WhatsNew> {
             padding: EdgeInsets.all(8.0),
             child: Card(
               child: FutureBuilder(
-                future: postsAPI.fetchWhatsNew(),
+                future: postsAPI.fetchPostsByCategoryID("1"),
                 builder: (context, AsyncSnapshot snapshot){
                   switch(snapshot.connectionState){
                     case ConnectionState.waiting:
@@ -135,7 +135,7 @@ class _WhatsNewState extends State<WhatsNew> {
     return Padding(
             padding: EdgeInsets.all(8),
             child: FutureBuilder(
-              future: postsAPI.fetchRecentUpdates(),
+              future: postsAPI.fetchPostsByCategoryID("2"),
               builder:(context, AsyncSnapshot snapshot){
                 switch(snapshot.connectionState){
                   case ConnectionState.waiting:

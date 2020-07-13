@@ -14,7 +14,7 @@ class _PopularState extends State<Popular> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: postsAPI.fetchPopularPosts(),
+      future: postsAPI.fetchPostsByCategoryID("3"),
       builder:(context, AsyncSnapshot snapshot){
         switch(snapshot.connectionState){
           case ConnectionState.none:
