@@ -85,18 +85,44 @@ class _WhatsNewState extends State<WhatsNew> {
               child: FutureBuilder(
                 future: postsAPI.fetchWhatsNew(),
                 builder: (context, AsyncSnapshot snapshot){
-                  Post post1 = snapshot.data[0];
-                  Post post2 = snapshot.data[1];
-                  Post post3 = snapshot.data[2];
-                  return Column(
-                    children: <Widget>[
-                      _drawSingleRow(post1),
-                      _drawDivider(),
-                      _drawSingleRow(post2),
-                      _drawDivider(),
-                      _drawSingleRow(post3),
-                    ],
-                  );
+                  switch(snapshot.connectionState){
+                    case ConnectionState.waiting:
+                      return _loading();
+                      break;
+                    case ConnectionState.active:
+                      return _loading();
+                      break;
+                    case ConnectionState.none:
+                      return _connectionError();
+                      break;
+                    case ConnectionState.done:
+                      if (snapshot.error != null) {
+                        return _error(snapshot.error);
+                      } else {
+                        if (snapshot.hasData) {
+                          List<Post> posts = snapshot.data;
+                          if (posts.length >= 3) {
+                            Post post1 = snapshot.data[0];
+                            Post post2 = snapshot.data[1];
+                            Post post3 = snapshot.data[2];
+                            return Column(
+                              children: <Widget>[
+                                _drawSingleRow(post1),
+                                _drawDivider(),
+                                _drawSingleRow(post2),
+                                _drawDivider(),
+                                _drawSingleRow(post3),
+                              ],
+                            );
+                          } else{
+                            return _noData();
+                          }
+                        } else {
+                          return _noData();
+                        }
+                      }
+                      break;
+                  }
                 },
               ),
             ),
@@ -260,6 +286,36 @@ class _WhatsNewState extends State<WhatsNew> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _loading() {
+    return Container(
+      padding: EdgeInsets.only(top: 16, bottom: 16),
+      child: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  Widget _connectionError() {
+    return Container(
+      padding: EdgeInsets.all(16),
+      child: Text('Connection Error!!!!'),
+    );
+  }
+
+  Widget _error(var error) {
+    return Container(
+      padding: EdgeInsets.all(16),
+      child: Text(error.toString()),
+    );
+  }
+
+  Widget _noData() {
+    return Container(
+      padding: EdgeInsets.all(16),
+      child: Text('No Data Available!'),
     );
   }
 }
