@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:newsapp/api/PostsApi.dart';
+import 'package:newsapp/models/Post.dart';
+import 'package:newsapp/utilities/DataUtilities.dart';
 
 class Popular extends StatefulWidget {
   @override
@@ -6,20 +9,44 @@ class Popular extends StatefulWidget {
 }
 
 class _PopularState extends State<Popular> {
+  PostsAPI postsAPI = PostsAPI();
+
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemBuilder: (context,position){
-        return Card(
-          child: _drawSingleRow(),
-        );
-      },
-      itemCount: 20,
+    return FutureBuilder(
+      future: postsAPI.fetchPopularPosts(),
+      builder:(context, AsyncSnapshot snapshot){
+        switch(snapshot.connectionState){
+          case ConnectionState.none:
+            return connectionError();
+            break;
+          case ConnectionState.waiting:
+            return loading();
+            break;
+          case ConnectionState.active:
+            return loading();
+            break;
+          case ConnectionState.done:
+            if (snapshot.hasError) {
+              return error(snapshot.error);
+            } else {
+              List<Post> posts = snapshot.data;
+              return ListView.builder(
+                itemBuilder: (context,position){
+                  return Card(
+                    child: _drawSingleRow(posts[position]),
+                  );
+                },
+                itemCount: posts.length,
+              );
+            }
+            break;
+        }
+      } 
     );
   }
 
-
-  Widget _drawSingleRow() {
+  Widget _drawSingleRow(Post post) {
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: Row(
@@ -27,7 +54,7 @@ class _PopularState extends State<Popular> {
         children: <Widget>[
           SizedBox(
             child: Image(
-              image: ExactAssetImage('assets/images/placeholder_bg.png'),
+              image: NetworkImage(post.featuredImage),
               fit: BoxFit.cover,
             ),
             width: 125.0,
@@ -40,7 +67,7 @@ class _PopularState extends State<Popular> {
             child: Column(
               children: <Widget>[
                 Text(
-                  'The World Global Warming Annual Summit',
+                  post.title,
                   maxLines: 2,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
@@ -54,7 +81,7 @@ class _PopularState extends State<Popular> {
                     Row(
                       children: <Widget>[
                         Icon(Icons.timer),
-                        Text('15 min'),
+                        Text(parseHumanDateTime(post.dateWritten)),
                       ],
                     ),
                   ],
