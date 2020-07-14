@@ -3,6 +3,10 @@ import 'package:newsapp/shared_ui/NavigationDrawer.dart';
 import 'package:newsapp/screens/home_tabs/WhatsNew.dart';
 import 'package:newsapp/screens/home_tabs/Popular.dart';
 import 'package:newsapp/screens/home_tabs/Favourites.dart';
+import 'package:newsapp/screens/pages/About.dart';
+import 'package:newsapp/screens/pages/Contact.dart';
+import 'package:newsapp/screens/pages/Help.dart';
+import 'package:newsapp/screens/pages/Settings.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -87,7 +91,28 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         ];
       },
       onSelected: (PopOutMenu menu){
-
+        switch(menu){
+          case PopOutMenu.ABOUT:
+            Navigator.push(context, MaterialPageRoute(builder: (context){
+              return AboutUs();
+            }));
+            break;
+          case PopOutMenu.CONTACT:
+            Navigator.push(context, MaterialPageRoute(builder: (context){
+              return ContactUs();
+            }));
+            break;
+          case PopOutMenu.HELP:
+            Navigator.push(context, MaterialPageRoute(builder: (context){
+              return Help();
+            }));
+            break;
+          case PopOutMenu.SETTINGS:
+            Navigator.push(context, MaterialPageRoute(builder: (context){
+              return Settings();
+            }));
+            break;
+        }
       },
       icon: Icon(Icons.more_vert),
     );
