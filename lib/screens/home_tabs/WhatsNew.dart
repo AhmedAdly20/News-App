@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:newsapp/api/PostsApi.dart';
 import 'package:newsapp/models/Post.dart';
@@ -31,40 +33,66 @@ class _WhatsNewState extends State<WhatsNew> {
       color: Colors.white,
       fontSize: 18,
     );
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height * 0.25,
-      decoration: BoxDecoration(
-          image: DecorationImage(
-        image: ExactAssetImage('assets/images/placeholder_bg.png'),
-        fit: BoxFit.cover,
-      )),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(left: 48, right: 48),
-              child: Text(
-                'How Terrieres & Royals Gatecrashed Final',
-                style: _headerTitle,
-                textAlign: TextAlign.center,
-              ),
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 32, right: 32),
-              child: Text(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod',
-                style: _headerDescription,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
-        ),
-      ),
+    return FutureBuilder(
+      future: postsAPI.fetchPostsByCategoryID("4"),
+      builder: (context, AsyncSnapshot snapshot){
+        switch(snapshot.connectionState){
+          case ConnectionState.none:
+            return connectionError();
+            break;
+          case ConnectionState.waiting:
+            return loading();
+            break;
+          case ConnectionState.active:
+            return loading();
+            break;
+          case ConnectionState.done:
+            if (snapshot.hasError) {
+              return error(snapshot.error);
+            } else {
+              List<Post> posts = snapshot.data;
+              Random random = Random();
+              int randomIndex = random.nextInt(posts.length);
+              Post post = posts[randomIndex];
+              return Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * 0.25,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                  image: NetworkImage(post.featuredImage),
+                  fit: BoxFit.cover,
+                )),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 48, right: 48),
+                        child: Text(
+                          post.title,
+                          style: _headerTitle,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 32, right: 32),
+                        child: Text(
+                          post.content.substring(0,50)+"...",
+                          style: _headerDescription,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+            break;
+        }
+      },
     );
   }
 
