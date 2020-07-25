@@ -5,6 +5,9 @@ import 'package:newsapp/screens/HeadLine_News.dart';
 import 'package:newsapp/screens/Twitter_Feeds.dart';
 import 'package:newsapp/screens/Instagram_Feeds.dart';
 import 'package:newsapp/screens/Facebook_Feeds.dart';
+import 'package:newsapp/utilities/AppUtilities.dart';
+import 'package:newsapp/screens/pages/Login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NavigationDrawer extends StatefulWidget {
   @override
@@ -13,49 +16,71 @@ class NavigationDrawer extends StatefulWidget {
 
 class _NavigationDrawerState extends State<NavigationDrawer> {
 
+  static bool isLoggedIn = false;
+  String token;
+  SharedPreferences sharedPreferences;
+
   List<NavMenuItem> navigationMenu = [
     NavMenuItem("Explore", () => HomeScreen()),
-    NavMenuItem("Headline New", () => HeadLineNews()),
-    NavMenuItem("Facebook Feeds", () => FacebookFeeds()),
-    NavMenuItem("Instagram Feeds", () => InstagramFeed()),
-    NavMenuItem("Twitter Feeds", () => TwitterFeed()),
+    NavMenuItem("Headline News", () => HeadLineNews()),
+    NavMenuItem( "Twitter Feeds" , () => TwitterFeed() ),
+    NavMenuItem("Instagram Feeds", () => InstagramFeed() ),
+    NavMenuItem("Facebook Feeds", () => FacebookFeeds() ),
+    NavMenuItem("Login", () => Login() ),
+//    NavMenuItem("Register", () => FacebookFeeds() ),
   ];
 
-  // List<String> navMenu = [
-  //   'Explore',
-  //   'Headline News',
-  //   'Read Later',
-  //   'Videos',
-  //   'Photos',
-  //   'Settings',
-  //   'Logout'
-  // ];
+  _checkToken() async{
+    sharedPreferences = await SharedPreferences.getInstance();
+    token = sharedPreferences.get('token');
+    setState(() {
+      if( token == null ){
+        isLoggedIn = false;
+      }else{
+        isLoggedIn = true;
+      }
+    });
+  }
+
+  _logout(){
+    if( sharedPreferences != null ){
+      sharedPreferences.remove('token');
+    }
+    return HomeScreen();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if( isLoggedIn ){
+      navigationMenu.add( NavMenuItem("Logout", _logout ) );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    if( this.mounted ){
+      _checkToken();
+    }
     return Drawer(
       child: Padding(
-        padding: const EdgeInsets.only(top: 50, left: 8),
+        padding: EdgeInsets.only(top: 75, left: 24),
         child: ListView.builder(
-          itemBuilder: (context,position){
+          itemBuilder: (context, position) {
             return Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8),
               child: ListTile(
                 title: Text(
                   navigationMenu[position].title,
-                  style: TextStyle(
-                    color: Colors.grey.shade700,
-                    fontSize: 22
-                  ),
+                  style: TextStyle(color: Colors.grey.shade700, fontSize: 22),
                 ),
                 trailing: Icon(
                   Icons.chevron_right,
                   color: Colors.grey.shade400,
                 ),
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context){
-                    return navigationMenu[position].destination();
-                  }));
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => navigationMenu[position].destination() ));
                 },
               ),
             );
